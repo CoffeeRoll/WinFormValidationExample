@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7061674D-809F-4310-A79A-E2622FE8284B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FluentValidationWinFormExample.App</RootNamespace>
+    <AssemblyName>FluentValidationWinFormExample.App</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FluentValidationWinFormExample.InputFilters\FluentValidationWinFormExample.InputFilters.csproj">
+      <Project>{075bfd51-6816-48c9-921a-b9ec1c2e398a}</Project>
+      <Name>FluentValidationWinFormExample.InputFilters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FluentValidationWinFormExample.Models\FluentValidationWinFormExample.Models.csproj">
+      <Project>{2D092185-B92B-4995-924B-C980AA2C884C}</Project>
+      <Name>FluentValidationWinFormExample.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FluentValidationWinFormExample.UI.Common\FluentValidationWinFormExample.UI.Common.csproj">
+      <Project>{8E87BFCC-219C-40A8-BC24-A1086092A6D7}</Project>
+      <Name>FluentValidationWinFormExample.UI.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FluentValidationWinFormExample.UI\FluentValidationWinFormExample.UI.csproj">
+      <Project>{88363981-DE1F-49E1-833B-E151ED56B743}</Project>
+      <Name>FluentValidationWinFormExample.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FluentValidationWinFormExample.Validators\FluentValidationWinFormExample.Validators.csproj">
+      <Project>{829ED956-6C18-4293-9DD0-3BEB62E2BEF8}</Project>
+      <Name>FluentValidationWinFormExample.Validators</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation">
+      <Version>11.12.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>10.0.9</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

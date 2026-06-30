@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="FluentValidationWinFormExample.App/FluentValidationWinFormExample.App.csproj" Id="7061674d-809f-4310-a79a-e2622fe8284b" />
+  <Project Path="FluentValidationWinFormExample.InputFilters/FluentValidationWinFormExample.InputFilters.csproj" Id="075bfd51-6816-48c9-921a-b9ec1c2e398a" />
+  <Project Path="FluentValidationWinFormExample.Models/FluentValidationWinFormExample.Models.csproj" Id="2d092185-b92b-4995-924b-c980aa2c884c" />
+  <Project Path="FluentValidationWinFormExample.UI.Common/FluentValidationWinFormExample.UI.Common.csproj" Id="8e87bfcc-219c-40a8-bc24-a1086092a6d7" />
+  <Project Path="FluentValidationWinFormExample.UI/FluentValidationWinFormExample.UI.csproj" Id="88363981-de1f-49e1-833b-e151ed56b743" />
+  <Project Path="FluentValidationWinFormExample.Validators/FluentValidationWinFormExample.Validators.csproj" Id="829ed956-6c18-4293-9dd0-3beb62e2bef8" />
+</Solution>
