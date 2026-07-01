@@ -20,6 +20,9 @@ namespace FluentValidationWinFormExample.UI.Common
     /// On every change, runs full model validation and refreshes errors only for
     /// fields the user has already touched — so untouched fields stay clean and
     /// cross-field rules (e.g. graduation &gt; birth) are re-evaluated automatically.
+    /// The session's <see cref="IValidationSession.IsValid"/> always reflects the
+    /// whole model, and <see cref="IValidationSession.StateChanged"/> fires on every
+    /// change so presenters can gate a Submit button on "dirty &amp;&amp; valid".
     ///
     /// Input filtering (blocking invalid keystrokes) is handled separately by
     /// <see cref="InputFilterBinder"/>; this class has no knowledge of it.
@@ -33,57 +36,39 @@ namespace FluentValidationWinFormExample.UI.Common
             where TView : class, IView
         {
             var bindings = ViewBindingCollector.Collect(typeof(TView));
-            var touched  = new HashSet<string>(StringComparer.Ordinal);
-
-            // Refreshes errors for every field the user has already interacted with.
-            void RefreshErrors()
-            {
-                var model  = modelFactory();
-                var result = validator.Validate(model);
-
-                foreach (var b in bindings)
-                {
-                    if (!touched.Contains(b.ViewPropertyName)) continue;
-
-                    var error = result.Errors
-                        .FirstOrDefault(e => e.PropertyName == b.ModelPropertyName);
-
-                    if (error != null)
-                        view.ShowValidationError(b.ViewPropertyName, error.ErrorMessage);
-                    else
-                        view.ClearValidationError(b.ViewPropertyName);
-                }
-            }
+            var session = new ValidationSession<TModel>(view, bindings, validator, modelFactory);
 
             foreach (var binding in bindings)
             {
-                var localBinding = binding;
-                var control = view.GetControl(localBinding.ViewPropertyName);
-                if (control == null) continue;
-
-                Action markAndRefresh = () =>
+                var name = binding.ViewPropertyName;
+                var control = view.GetControl(name);
+                if (control == null)
                 {
-                    touched.Add(localBinding.ViewPropertyName);
-                    RefreshErrors();
-                };
+                    continue;
+                }
 
                 if (control is DateTimePicker dtp)
                 {
-                    dtp.ValueChanged += (_, __) => markAndRefresh();
+                    dtp.ValueChanged += (_, __) => session.OnFieldChanged(name);
                 }
                 else if (control is DataGridView dgv)
                 {
-                    dgv.RowsAdded        += (_, __) => markAndRefresh();
-                    dgv.RowsRemoved      += (_, __) => markAndRefresh();
-                    dgv.CellValueChanged += (_, __) => markAndRefresh();
+                    dgv.RowsAdded        += (_, __) => session.OnFieldChanged(name);
+                    dgv.RowsRemoved      += (_, __) => session.OnFieldChanged(name);
+                    dgv.CellValueChanged += (_, __) => session.OnFieldChanged(name);
                 }
                 else
                 {
-                    control.TextChanged += (_, __) => markAndRefresh();
+                    control.TextChanged += (_, __) => session.OnFieldChanged(name);
                 }
             }
 
-            return new ValidationSession<TModel>(view, bindings, validator, modelFactory, touched);
+            // Establish the initial IsValid state (no errors are displayed because
+            // nothing is touched yet) so callers can gate the Submit button
+            // immediately after binding.
+            session.Refresh();
+
+            return session;
         }
 
         // ------------------------------------------------------------------ session
@@ -94,42 +79,77 @@ namespace FluentValidationWinFormExample.UI.Common
             private readonly List<BindingInfo>  _bindings;
             private readonly IValidator<TModel> _validator;
             private readonly Func<TModel>       _modelFactory;
-            private readonly HashSet<string>    _touched;
+            private readonly HashSet<string>    _touched
+                = new HashSet<string>(StringComparer.Ordinal);
 
             public ValidationSession(
                 IView              view,
                 List<BindingInfo>  bindings,
                 IValidator<TModel> validator,
-                Func<TModel>       modelFactory,
-                HashSet<string>    touched)
+                Func<TModel>       modelFactory)
             {
                 _view         = view;
                 _bindings     = bindings;
                 _validator    = validator;
                 _modelFactory = modelFactory;
-                _touched      = touched;
+            }
+
+            public bool IsValid { get; private set; }
+
+            public bool IsDirty => _touched.Count > 0;
+
+            public event EventHandler StateChanged;
+
+            /// <summary>Called by the binder whenever a bound control's value changes.</summary>
+            public void OnFieldChanged(string viewPropertyName)
+            {
+                _touched.Add(viewPropertyName);
+                Refresh();
+            }
+
+            /// <summary>
+            /// Validates the full model, updates error icons for touched fields,
+            /// and notifies listeners that the session state may have changed.
+            /// </summary>
+            public void Refresh()
+            {
+                var model  = _modelFactory();
+                var result = _validator.Validate(model);
+
+                IsValid = result.IsValid;
+
+                foreach (var b in _bindings)
+                {
+                    if (!_touched.Contains(b.ViewPropertyName))
+                    {
+                        continue;
+                    }
+
+                    var error = result.Errors
+                        .FirstOrDefault(e => e.PropertyName == b.ModelPropertyName);
+
+                    if (error != null)
+                    {
+                        _view.ShowValidationError(b.ViewPropertyName, error.ErrorMessage);
+                    }
+                    else
+                    {
+                        _view.ClearValidationError(b.ViewPropertyName);
+                    }
+                }
+
+                StateChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public bool ValidateAll()
             {
                 foreach (var b in _bindings)
-                    _touched.Add(b.ViewPropertyName);
-
-                var model  = _modelFactory();
-                var result = _validator.Validate(model);
-
-                foreach (var b in _bindings)
                 {
-                    var error = result.Errors
-                        .FirstOrDefault(e => e.PropertyName == b.ModelPropertyName);
-
-                    if (error != null)
-                        _view.ShowValidationError(b.ViewPropertyName, error.ErrorMessage);
-                    else
-                        _view.ClearValidationError(b.ViewPropertyName);
+                    _touched.Add(b.ViewPropertyName);
                 }
 
-                return result.IsValid;
+                Refresh();
+                return IsValid;
             }
         }
     }

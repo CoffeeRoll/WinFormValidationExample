@@ -14,16 +14,18 @@ namespace FluentValidationWinFormExample.App
             Application.SetCompatibleTextRenderingDefault(false);
 
             using (var provider = Bootstrapper.BuildServiceProvider())
-            using (var scope = provider.CreateScope())
             {
-                // Resolving the presenter is sufficient — DI injects ISampleModelView
-                // (which maps to the scoped SampleModelForm) automatically.
-                // The view is then retrieved from the presenter, avoiding a second
-                // container resolution.
-                var presenter = scope.ServiceProvider.GetRequiredService<ISampleModelPresenter>();
-                presenter.Initialize();
+                using (var scope = provider.CreateScope())
+                {
+                    // Resolving the presenter is sufficient — DI injects ISampleModelView
+                    // (which maps to the scoped SampleModelForm) automatically.
+                    // The view is then retrieved from the presenter, avoiding a second
+                    // container resolution.
+                    var presenter = scope.ServiceProvider.GetRequiredService<ISampleModelPresenter>();
+                    presenter.Initialize();
 
-                Application.Run(presenter.View as Form);
+                    Application.Run(presenter.View as Form);
+                }
             }
         }
     }

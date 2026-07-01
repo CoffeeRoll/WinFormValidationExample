@@ -32,13 +32,22 @@ namespace FluentValidationWinFormExample.UI.Common
 
             foreach (var binding in bindings)
             {
-                if (binding.InputFilter == InputFilter.None) continue;
+                if (binding.InputFilter == InputFilter.None)
+                {
+                    continue;
+                }
 
                 var control = view.GetControl(binding.ViewPropertyName);
-                if (!(control is TextBox filterBox)) continue;
+                if (!(control is TextBox filterBox))
+                {
+                    continue;
+                }
 
                 var regex = _filterProvider.GetRegex(binding.InputFilter, binding.MaxDecimalPlaces);
-                if (regex == null) continue;
+                if (regex == null)
+                {
+                    continue;
+                }
 
                 // Capture filterBox in a local so the lambda always refers to the
                 // correct instance even if the loop variable is reused.
@@ -46,7 +55,10 @@ namespace FluentValidationWinFormExample.UI.Common
 
                 filterBox.KeyPress += (_, e) =>
                 {
-                    if (char.IsControl(e.KeyChar)) return;
+                    if (char.IsControl(e.KeyChar))
+                    {
+                        return;
+                    }
 
                     string projected =
                         capturedBox.Text.Substring(0, capturedBox.SelectionStart)
@@ -54,7 +66,9 @@ namespace FluentValidationWinFormExample.UI.Common
                         + capturedBox.Text.Substring(capturedBox.SelectionStart + capturedBox.SelectionLength);
 
                     if (!regex.IsMatch(projected))
+                    {
                         e.Handled = true;
+                    }
                 };
             }
         }

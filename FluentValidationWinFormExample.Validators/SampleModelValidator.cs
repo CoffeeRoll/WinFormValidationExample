@@ -8,6 +8,7 @@ namespace FluentValidationWinFormExample.Validators
     {
         // Reuse a single instance — FluentValidation validators are thread-safe.
         private static readonly OptionModelValidator _optionValidator = new OptionModelValidator();
+        private static readonly SubModelValidator _subModelValidator = new SubModelValidator();
 
         public SampleModelValidator()
         {
@@ -34,6 +35,19 @@ namespace FluentValidationWinFormExample.Validators
             RuleFor(x => x.Income)
                 .GreaterThanOrEqualTo(0).WithMessage("Income must be 0 or greater.");
 
+            // ---- SubModel rules ---------------------------------------------------------
+            // SetValidator runs the child validator against the nested object; its
+            // errors surface with dotted property names ("SubModel.MaidenName"), which
+            // the binder matches against the view's dotted bindings.  The UI mapper
+            // always materialises SubModel, but guard against null for callers that
+            // validate a hand-built model.
+
+            RuleFor(x => x.SubModel)
+                .NotNull().WithMessage("Additional details are required.");
+
+            RuleFor(x => x.SubModel)
+                .SetValidator(_subModelValidator);
+
             // ---- Options rules ----------------------------------------------------------
             // All rules target the "Options" property so the binder can map errors to the
             // DataGridView control. Individual-item validation is delegated to
@@ -55,7 +69,11 @@ namespace FluentValidationWinFormExample.Validators
             RuleFor(x => x.Options)
                 .Must(opts =>
                 {
-                    if (opts == null) return true;
+                    if (opts == null)
+                    {
+                        return true;
+                    }
+
                     var titles = opts.Select(o => o.Title ?? string.Empty).ToList();
                     return titles.Count == titles.Distinct().Count();
                 })

@@ -48,10 +48,12 @@
     <Compile Include="Interfaces\IInputFilterBinder.cs" />
     <Compile Include="Interfaces\IInputFilterProvider.cs" />
     <Compile Include="Interfaces\IPresenter.cs" />
+    <Compile Include="Interfaces\ISubmitView.cs" />
     <Compile Include="Interfaces\IValidationBinder.cs" />
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="PresenterBase.cs" />
     <Compile Include="ValidatesPropertyAttribute.cs" />
+    <Compile Include="ValidatingPresenterBase.cs" />
     <Compile Include="ValidationBinder.cs" />
     <Compile Include="ViewBindingCollector.cs" />
     <Compile Include="ViewBase.cs">

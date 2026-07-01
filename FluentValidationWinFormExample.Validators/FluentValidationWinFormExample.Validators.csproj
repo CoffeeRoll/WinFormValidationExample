@@ -44,6 +44,7 @@
     <Compile Include="OptionModelValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleModelValidator.cs" />
+    <Compile Include="SubModelValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FluentValidationWinFormExample.Models\FluentValidationWinFormExample.Models.csproj">

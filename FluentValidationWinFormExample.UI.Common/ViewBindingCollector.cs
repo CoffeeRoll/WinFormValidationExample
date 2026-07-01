@@ -44,7 +44,8 @@ namespace FluentValidationWinFormExample.UI.Common
                     result.Add(new BindingInfo
                     {
                         ViewPropertyName = prop.Name,
-                        ModelPropertyName = validatesAttr.ModelPropertyName,
+                        // Null means "same name as the view property".
+                        ModelPropertyName = validatesAttr.ModelPropertyName ?? prop.Name,
                         InputFilter = filterAttr?.Filter ?? InputFilter.None,
                         MaxDecimalPlaces = filterAttr?.MaxDecimalPlaces ?? 0
                     });

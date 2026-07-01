@@ -18,5 +18,7 @@ namespace FluentValidationWinFormExample.Models
         public DateTime DateOfGraduation { get; set; }
 
         public IEnumerable<OptionModel> Options { get; set; }
+
+        public SubModel SubModel { get; set; }
     }
 }

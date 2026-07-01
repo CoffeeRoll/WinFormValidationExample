@@ -11,8 +11,9 @@ namespace FluentValidationWinFormExample.UI
     /// WinForms view for <see cref="SampleModel"/>.
     ///
     /// Derives from <see cref="ViewBase"/> which supplies the <c>ErrorProvider</c>
-    /// and the <c>RegisterControl</c> / <c>GetControl</c> plumbing used by
-    /// <see cref="IValidationBinder"/>.
+    /// and the <c>RegisterControl</c> / <c>GetControl</c> plumbing.  Every bound
+    /// view property is registered explicitly below, so the property-to-control
+    /// mapping is visible in one place.
     ///
     /// All <see cref="ISampleModelView"/> members that clash with inherited
     /// Form/Control names (e.g. <c>Name</c>) are implemented explicitly.
@@ -24,12 +25,14 @@ namespace FluentValidationWinFormExample.UI
             InitializeComponent();
 
             // Register every validated control under its view-interface property name.
-            // The binder uses these mappings to hook up events and the ErrorProvider
-            // uses them to display error icons next to the right control.
+            // The binder uses these mappings to hook up change events and the
+            // ErrorProvider uses them to display error icons next to the right control.
             RegisterControl(nameof(ISampleModelView.Name),             txtName);
             RegisterControl(nameof(ISampleModelView.Email),            txtEmail);
             RegisterControl(nameof(ISampleModelView.Age),              txtAge);
             RegisterControl(nameof(ISampleModelView.Income),           txtIncome);
+            RegisterControl(nameof(ISampleModelView.MaidenName),       txtMaidenName);
+            RegisterControl(nameof(ISampleModelView.Address),          txtAddress);
             RegisterControl(nameof(ISampleModelView.DateOfBirth),      dtpDateOfBirth);
             RegisterControl(nameof(ISampleModelView.DateOfGraduation), dtpDateOfGraduation);
             RegisterControl(nameof(ISampleModelView.Options),          dgvOptions);
@@ -46,10 +49,17 @@ namespace FluentValidationWinFormExample.UI
         string ISampleModelView.Age    => txtAge.Text;
         string ISampleModelView.Income => txtIncome.Text;
 
+        // ---- ISampleModelView: nested SubModel fields ----
+
+        string ISampleModelView.MaidenName => txtMaidenName.Text;
+        string ISampleModelView.Address    => txtAddress.Text;
+
         // ---- ISampleModelView: date fields ----
 
-        DateTime ISampleModelView.DateOfBirth      => dtpDateOfBirth.Value;
-        DateTime ISampleModelView.DateOfGraduation => dtpDateOfGraduation.Value;
+        // Strip the time component so two pickers on the same calendar date
+        // are always treated as equal, regardless of DateTime.Now initialization order.
+        DateTime ISampleModelView.DateOfBirth      => dtpDateOfBirth.Value.Date;
+        DateTime ISampleModelView.DateOfGraduation => dtpDateOfGraduation.Value.Date;
 
         // ---- ISampleModelView: options collection ----
 
@@ -60,7 +70,11 @@ namespace FluentValidationWinFormExample.UI
             var result = new List<OptionModel>();
             foreach (DataGridViewRow row in dgvOptions.Rows)
             {
-                if (row.IsNewRow) continue;
+                if (row.IsNewRow)
+                {
+                    continue;
+                }
+
                 result.Add(new OptionModel
                 {
                     Title       = row.Cells[colTitle.Name].Value?.ToString()       ?? string.Empty,
@@ -70,9 +84,14 @@ namespace FluentValidationWinFormExample.UI
             return result;
         }
 
-        // ---- ISampleModelView: submit ----
+        // ---- ISubmitView ----
 
         public event EventHandler SubmitRequested;
+
+        public void SetSubmitEnabled(bool enabled)
+        {
+            btnSubmit.Enabled = enabled;
+        }
 
         public void ShowSubmitSuccess()
         {
@@ -95,7 +114,9 @@ namespace FluentValidationWinFormExample.UI
         private void BtnRemoveOption_Click(object sender, EventArgs e)
         {
             if (dgvOptions.CurrentRow != null && !dgvOptions.CurrentRow.IsNewRow)
+            {
                 dgvOptions.Rows.Remove(dgvOptions.CurrentRow);
+            }
         }
 
         private void BtnSubmit_Click(object sender, EventArgs e)

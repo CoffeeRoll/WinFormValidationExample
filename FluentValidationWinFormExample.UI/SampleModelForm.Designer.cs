@@ -7,7 +7,10 @@ namespace FluentValidationWinFormExample.UI
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
+            {
                 components.Dispose();
+            }
+
             base.Dispose(disposing);
         }
 
@@ -28,6 +31,11 @@ namespace FluentValidationWinFormExample.UI
             this.dtpDateOfBirth      = new System.Windows.Forms.DateTimePicker();
             this.lblDateOfGrad       = new System.Windows.Forms.Label();
             this.dtpDateOfGraduation = new System.Windows.Forms.DateTimePicker();
+            this.grpSubModel         = new System.Windows.Forms.GroupBox();
+            this.lblMaidenName       = new System.Windows.Forms.Label();
+            this.txtMaidenName       = new System.Windows.Forms.TextBox();
+            this.lblAddress          = new System.Windows.Forms.Label();
+            this.txtAddress          = new System.Windows.Forms.TextBox();
             this.grpOptions          = new System.Windows.Forms.GroupBox();
             this.dgvOptions          = new System.Windows.Forms.DataGridView();
             this.colTitle            = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -37,6 +45,7 @@ namespace FluentValidationWinFormExample.UI
             this.btnSubmit           = new System.Windows.Forms.Button();
 
             this.grpPersonal.SuspendLayout();
+            this.grpSubModel.SuspendLayout();
             this.grpOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOptions)).BeginInit();
             this.SuspendLayout();
@@ -108,11 +117,40 @@ namespace FluentValidationWinFormExample.UI
             this.dtpDateOfGraduation.Name     = "dtpDateOfGraduation";
             this.dtpDateOfGraduation.Format   = System.Windows.Forms.DateTimePickerFormat.Short;
 
+            // ---- grpSubModel ----
+            // grpPersonal bottom = 12 + 210 = 222; this group sits 10px below.
+            this.grpSubModel.Location = new System.Drawing.Point(12, 232);
+            this.grpSubModel.Name     = "grpSubModel";
+            this.grpSubModel.Size     = new System.Drawing.Size(460, 90);
+            this.grpSubModel.TabIndex = 1;
+            this.grpSubModel.Text     = "Additional Details";
+            this.grpSubModel.Controls.AddRange(new System.Windows.Forms.Control[] {
+                this.lblMaidenName, this.txtMaidenName,
+                this.lblAddress, this.txtAddress
+            });
+
+            // Maiden Name
+            this.lblMaidenName.AutoSize = true;
+            this.lblMaidenName.Location = new System.Drawing.Point(lx, 26);
+            this.lblMaidenName.Text     = "Maiden Name:";
+            this.txtMaidenName.Location = new System.Drawing.Point(tx, 23);
+            this.txtMaidenName.Size     = new System.Drawing.Size(tw, 20);
+            this.txtMaidenName.Name     = "txtMaidenName";
+
+            // Address
+            this.lblAddress.AutoSize = true;
+            this.lblAddress.Location = new System.Drawing.Point(lx, 26 + rh);
+            this.lblAddress.Text     = "Address:";
+            this.txtAddress.Location = new System.Drawing.Point(tx, 23 + rh);
+            this.txtAddress.Size     = new System.Drawing.Size(tw, 20);
+            this.txtAddress.Name     = "txtAddress";
+
             // ---- grpOptions ----
-            this.grpOptions.Location = new System.Drawing.Point(12, 232);
+            // grpSubModel bottom = 232 + 90 = 322; this group sits 10px below.
+            this.grpOptions.Location = new System.Drawing.Point(12, 332);
             this.grpOptions.Name     = "grpOptions";
             this.grpOptions.Size     = new System.Drawing.Size(460, 160);
-            this.grpOptions.TabIndex = 1;
+            this.grpOptions.TabIndex = 2;
             this.grpOptions.Text     = "Options (enter manually)";
             this.grpOptions.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.dgvOptions, this.btnAddOption, this.btnRemoveOption
@@ -152,8 +190,8 @@ namespace FluentValidationWinFormExample.UI
             this.btnRemoveOption.Text     = "Remove";
 
             // ---- btnSubmit ----
-            // grpOptions bottom = 232 + 160 = 392; submit sits 12px below.
-            this.btnSubmit.Location = new System.Drawing.Point(397, 404);
+            // grpOptions bottom = 332 + 160 = 492; submit sits 12px below.
+            this.btnSubmit.Location = new System.Drawing.Point(397, 504);
             this.btnSubmit.Name     = "btnSubmit";
             this.btnSubmit.Size     = new System.Drawing.Size(75, 26);
             this.btnSubmit.Text     = "Submit";
@@ -161,7 +199,7 @@ namespace FluentValidationWinFormExample.UI
             // ---- SampleModelForm ----
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize          = new System.Drawing.Size(484, 442);
+            this.ClientSize          = new System.Drawing.Size(484, 542);
             this.FormBorderStyle     = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox         = false;
             this.Name                = "SampleModelForm";
@@ -169,12 +207,15 @@ namespace FluentValidationWinFormExample.UI
             this.Text                = "Sample Model";
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.grpPersonal,
+                this.grpSubModel,
                 this.grpOptions,
                 this.btnSubmit
             });
 
             this.grpPersonal.ResumeLayout(false);
             this.grpPersonal.PerformLayout();
+            this.grpSubModel.ResumeLayout(false);
+            this.grpSubModel.PerformLayout();
             this.grpOptions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvOptions)).EndInit();
             this.ResumeLayout(false);
@@ -195,6 +236,12 @@ namespace FluentValidationWinFormExample.UI
         private System.Windows.Forms.DateTimePicker dtpDateOfBirth;
         private System.Windows.Forms.Label      lblDateOfGrad;
         private System.Windows.Forms.DateTimePicker dtpDateOfGraduation;
+
+        private System.Windows.Forms.GroupBox   grpSubModel;
+        private System.Windows.Forms.Label      lblMaidenName;
+        private System.Windows.Forms.TextBox    txtMaidenName;
+        private System.Windows.Forms.Label      lblAddress;
+        private System.Windows.Forms.TextBox    txtAddress;
 
         private System.Windows.Forms.GroupBox   grpOptions;
         private System.Windows.Forms.DataGridView dgvOptions;
